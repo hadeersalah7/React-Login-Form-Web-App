@@ -5,8 +5,10 @@ export default function Login() {
     email: "",
     password: ""
   })
-  const email = useRef()
-  const password = useRef()
+
+  const [isedit, setIsEdit] = useState({email: false, password: false})
+  // const email = useRef()
+  // const password = useRef()
 
   const handleFormSubmit = (e) =>{
     e.preventDefault()
@@ -21,8 +23,14 @@ export default function Login() {
       [identifir]: e.target.value
     }))
   }
+  const handleInputBlur = (identifir) => {
+    setIsEdit(prev => (
+      {...prev,
+      [identifir]: true}
+    ))
+}
 
-  const validateEmail = enteredValues.email !== "" && !enteredValues.email.includes("@")
+  const validateEmail = isedit.email && !enteredValues.email.includes("@")
   return (
     <form onSubmit={handleFormSubmit}>
       <h2>Login</h2>
@@ -30,7 +38,7 @@ export default function Login() {
       <div className="control-row">
         <div className="control no-margin">
           <label htmlFor="email">Email</label>
-          <input id="email" type="email" name="email" onChange={(e) => (handleInputChange("email", e))} />
+          <input id="email" type="email" name="email" onChange={(e) => (handleInputChange("email", e))} onBlur={() => handleInputBlur("email")}/>
           {validateEmail && <p>Please enter a valid email address.</p>}
         </div>
 
