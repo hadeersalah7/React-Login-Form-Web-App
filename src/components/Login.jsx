@@ -1,37 +1,39 @@
 import { useState } from "react";
 import { isEmail, isNotEmpty, hasMinLength } from "../util/validation";
+import useInput from "./hooks/UseInput";
 export default function Login() {
-  const [enteredValues, setEnteredValues] = useState({
-    email: "",
-    password: ""
-  })
 
-  const [isedit, setIsEdit] = useState({email: false, password: false})
+  const { value: enteredValue, handleInputBlur: handleBlur, handleInputChange: handleChange, hasError: emailHasError } = useInput("", (value) => isEmail(value) &&
+    hasError(value)
+  )
+  const { value: password, handleInputChange: handlePassChange, handleInputBlur: handlePassBlur, hasError: passHasError } = useInput("",
+    value => hasMinLength(value, 6))
 
-  const handleFormSubmit = (e) =>{
+  const handleFormSubmit = (e) => {
     e.preventDefault()
+    if (emailHasError || passHasError) {
+      return;
+    }
     console.log(enteredEmail, enteredPassword)
   }
 
-  const validateEmail = isedit.email && !isEmail(enteredValues.email) && isNotEmpty(enteredValues.email)
-  const validatePassword = isedit.password && hasMinLength(enteredValues.password, 6)
   return (
     <form onSubmit={handleFormSubmit}>
       <h2>Login</h2>
 
       <div className="control-row">
-        
-        <Input label="email" type="email" name="email" value={enteredValues.email} 
-        onChange={(e) => (handleInputChange("email", e))} onBlur={() => handleInputBlur("email")}
-        error={validateEmail && "Please Enter A Valid Email."}
+
+        <Input label="email" type="email" name="email" value={enteredValue}
+          onChange={handleChange} onBlur={handleBlur}
+          error={emailHasError && "Please Enter A Valid Email."}
         />
 
         <div className="control no-margin">
           <label htmlFor="password">Password</label>
-          <Input id="password" type="password" name="password" onChange={(e) => (handleInputChange("password", e))}
-           value={enteredValues.password} onBlur={() => handleInputBlur("password")}
-           error={validatePassword && "Please Enter A Valid Password."}
-           />
+          <Input id="password" type="password" name="password" value={password}
+            onChange={handlePassChange} onBlur={handlePassBlur}
+            error={passHasError && "Please Enter A Valid Password."}
+          />
         </div>
       </div>
 
