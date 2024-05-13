@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-
+import { useState } from "react";
+import { isEmail, isNotEmpty, hasMinLength } from "../util/validation";
 export default function Login() {
   const [enteredValues, setEnteredValues] = useState({
     email: "",
@@ -7,31 +7,14 @@ export default function Login() {
   })
 
   const [isedit, setIsEdit] = useState({email: false, password: false})
-  // const email = useRef()
-  // const password = useRef()
 
   const handleFormSubmit = (e) =>{
     e.preventDefault()
-  //  const enteredEmail = email.current.value
-  //  const enteredPassword = password.current.value
     console.log(enteredEmail, enteredPassword)
   }
 
-  const handleInputChange = (identifir, e) => {
-    setEnteredValues(prev => ({
-    ...prev,
-      [identifir]: e.target.value
-    }))
-  }
-  const handleInputBlur = (identifir) => {
-    setIsEdit(prev => (
-      {...prev,
-      [identifir]: true}
-    ))
-}
-
-  const validateEmail = isedit.email && !enteredValues.email.includes("@")
-  const validatePassword = isedit.password && enteredValues.password.length < 6
+  const validateEmail = isedit.email && !isEmail(enteredValues.email) && isNotEmpty(enteredValues.email)
+  const validatePassword = isedit.password && hasMinLength(enteredValues.password, 6)
   return (
     <form onSubmit={handleFormSubmit}>
       <h2>Login</h2>
